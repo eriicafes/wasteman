@@ -1,0 +1,24 @@
+name: Lint and Format
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'server'
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+
+      - name: Run lint and format
+        run: |
+          npm ci
+          npm run lint
+          npm run format
