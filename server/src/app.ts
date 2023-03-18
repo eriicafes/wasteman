@@ -11,6 +11,5 @@ app.use(express.json())
 // register controllers
 register(app).with(
   PingController,
-  // needs to be the last
-  ErrorHandlerController
+  ErrorHandlerController // needs to be the last
 )

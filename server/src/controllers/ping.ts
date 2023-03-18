@@ -1,11 +1,11 @@
 import { Controller } from "@/utils/controller"
-import { Application, Request, Response, Router } from "express"
+import { Application, Request, Response } from "express"
 
 export class PingController extends Controller {
-  route(app: Application, router: Router) {
-    router.get("/", this.ping.bind(this))
+  route(app: Application) {
+    this.router.get("/", this.ping)
 
-    app.use("/ping", router)
+    this.router.register(app)
   }
 
   public ping(_req: Request, res: Response) {
