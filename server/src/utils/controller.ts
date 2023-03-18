@@ -33,8 +33,6 @@ export function register(app: Application) {
 
         const router = Router()
         controller.route(app, router)
-
-        app.use(router)
       }
     },
   }
