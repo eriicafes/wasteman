@@ -20,18 +20,31 @@ export abstract class Controller {
    * router methods binds the `this` keyword to the controller instance.
    */
   protected router = {
-    use: (...handlers: RequestHandler[]) => void this._router.use(...handlers.map((h) => h.bind(this))),
+    use: (...handlers: RequestHandler[]) => void this._router.use(...handlers.map((h) => asyncHandler(h.bind(this)))),
     get: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.get(path, ...handlers.map((h) => h.bind(this))),
+      void this._router.get(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
     post: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.post(path, ...handlers.map((h) => h.bind(this))),
+      void this._router.post(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
     put: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.put(path, ...handlers.map((h) => h.bind(this))),
+      void this._router.put(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
     patch: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.patch(path, ...handlers.map((h) => h.bind(this))),
+      void this._router.patch(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
     delete: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.delete(path, ...handlers.map((h) => h.bind(this))),
+      void this._router.delete(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
     register: (app: Application, path?: string) => void (path ? app.use(path, this._router) : app.use(this._router)),
+  }
+}
+
+/**
+ * Wrap async handler function to catch and prevent errors from exiting the nodejs process.
+ */
+const asyncHandler = (handler: RequestHandler): RequestHandler => {
+  return async (req, res, next) => {
+    try {
+      await Promise.resolve(handler(req, res, next))
+    } catch (err) {
+      next(err)
+    }
   }
 }
 

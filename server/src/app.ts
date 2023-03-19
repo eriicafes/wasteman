@@ -1,7 +1,7 @@
-import { PingController } from "@/controllers/ping"
-import { register } from "@/utils/controller"
 import express from "express"
 import { ErrorHandlerController } from "./controllers/error-handler"
+import { PingController } from "./controllers/ping"
+import { register } from "./utils/controller"
 
 export const app = express()
 

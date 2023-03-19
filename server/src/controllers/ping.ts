@@ -1,5 +1,6 @@
+import { TypedRequest, TypedResponse } from "@/types"
 import { Controller } from "@/utils/controller"
-import { Application, Request, Response } from "express"
+import { Application } from "express"
 
 export class PingController extends Controller {
   route(app: Application) {
@@ -8,9 +9,13 @@ export class PingController extends Controller {
     this.router.register(app)
   }
 
-  public ping(_req: Request, res: Response) {
+  public async ping(_req: TypedRequest, res: TypedResponse) {
     res.send({
-      ping: this.container.ping.getPingResponse(),
+      success: true,
+      message: "Ping successful",
+      data: {
+        ping: this.container.ping.getPingResponse(),
+      },
     })
   }
 }
