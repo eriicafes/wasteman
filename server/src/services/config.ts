@@ -4,7 +4,7 @@ import { z } from "zod"
 dotenv.config()
 
 export class ConfigService {
-  private env: Env
+  public env: Env
 
   constructor() {
     const validated = envSchema.safeParse(process.env)
@@ -15,10 +15,6 @@ export class ConfigService {
     }
 
     this.env = validated.data
-  }
-
-  public get<K extends keyof Env>(key: K) {
-    return this.env[key]
   }
 }
 
