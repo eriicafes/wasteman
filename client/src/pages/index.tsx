@@ -3,7 +3,6 @@ import { useGeolocated } from "react-geolocated"
 
 export default function Home() {
   const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated()
-  const checkGeo = () => console.log({ coords, isGeolocationAvailable, isGeolocationEnabled })
 
   return (
     <>
@@ -21,21 +20,19 @@ export default function Home() {
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure accusantium fugiat laboriosam laudantium
             itaque
           </p>
-          <span
-            onClick={() => checkGeo()}
-            className="mt-3 flex w-full cursor-pointer items-center justify-center rounded-[25px] bg-indigo-800 py-3  text-sm font-semibold  text-gray-100  hover:bg-indigo-700 hover:text-gray-200"
-          >
+          <span className="mt-3 flex w-full cursor-pointer items-center justify-center rounded-[25px] bg-indigo-800 py-3  text-sm font-semibold  text-gray-100  hover:bg-indigo-700 hover:text-gray-200">
             Get Started
           </span>
         </div>
-        {isGeolocationEnabled &&
-          <div className='w-full h-full fixed top-0 left-0 flex justify-center items-center bg-black opacity-90 z-50'>
-            <div className="p-3 space-y-3 bg-white font-semibold">
+        {isGeolocationEnabled && (
+          <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-black opacity-90">
+            <div className="space-y-3 bg-white p-3 font-semibold">
               <h1 className="text-xl font-bold">Users geolocation info</h1>
               <p>Latitude: {coords?.latitude}</p>
               <p>Longitude: {coords?.longitude}</p>
             </div>
-          </div>}
+          </div>
+        )}
       </main>
     </>
   )
