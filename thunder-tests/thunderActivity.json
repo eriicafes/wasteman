@@ -8,9 +8,14 @@
     "method": "GET",
     "sortNum": 0,
     "created": "2023-03-22T09:19:57.874Z",
-    "modified": "2023-03-22T09:19:57.874Z",
+    "modified": "2023-03-22T09:42:37.552Z",
     "headers": [],
     "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"name\": \"ebiere\",\n  \"password\": \"12345678\"\n}\n",
+      "form": []
+    },
     "tests": []
   },
   {
@@ -36,12 +41,23 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2023-03-22T09:30:52.675Z",
-    "modified": "2023-03-22T09:38:01.484Z",
-    "headers": [],
+    "modified": "2023-03-22T10:25:41.339Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "*/*",
+        "isDisabled": true
+      },
+      {
+        "name": "User-Agent",
+        "value": "Thunder Client (https://www.thunderclient.com)",
+        "isDisabled": true
+      }
+    ],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"ebiere\",\n  \"password\": \"12345678\"\n}\n",
+      "raw": "{\n  \"name\": \"milton\",\n  \"password\": \"12345678\"\n}\n",
       "form": []
     },
     "tests": []

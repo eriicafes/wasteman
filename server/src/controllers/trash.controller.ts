@@ -1,12 +1,30 @@
 import Trash from "@/models/trashPoll"
-import { Request, Response } from "express"
+import { Controller } from "@/utils/controller"
+import { Application, Request, Response } from "express"
+
+export class TrashController extends Controller {
+  route(app: Application) {
+    this.router.get("/", this.getAllTrashPolls)
+
+    this.router.register(app, "/trash")
+  }
+  
+  public getAllTrashPolls(req: Request, res: Response) {
+    let trash = Trash.find((err: any, trash: any) => {
+      if (err) {
+        res.send("error")
+      } else {
+        res.status(200).json(trash);
+      }
+    })
+  }
+}
 
 export let getAllTrashPolls = (req: Request, res: Response) => {
   let trash = Trash.find((err: any, trash: any) => {
     if (err) {
       res.send("error")
     } else {
-      res.send(trash);
       res.status(200).json(trash);
     }
   })
@@ -49,7 +67,6 @@ export let updateTrashPoll = (req: Request, res: Response) => {
 }
 
 export let addTrashPoll = async (req: Request, res: Response) => {
-  var trash = new Trash(req.body)
   const createData = await Trash.create({
     name: req.body.name,
     password: req.body.password,
@@ -59,5 +76,4 @@ export let addTrashPoll = async (req: Request, res: Response) => {
   })
   console.log(req.body)
   res.status(201).json(createData)
-  res.send(trash)
 }
