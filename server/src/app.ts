@@ -2,7 +2,7 @@ import express, { Request, Response } from "express"
 import { ErrorHandlerController } from "./controllers/error-handler"
 import { PingController } from "./controllers/ping"
 import { register } from "./utils/controller"
-import { connectDB } from "./db/db"
+import { connectDB } from "./config/db"
 import { addTrashPoll, deleteTrashPoll, getAllTrashPolls, getATrashPoll, updateTrashPoll } from "./controllers/trash.controller"
 
 export const app = express()
