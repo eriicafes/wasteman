@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req: Request, res: Response) => res.send("hi"))
 
 // API Endpoints
-app.get("/trashs", getAllTrashPolls)
+app.get("/trash", getAllTrashPolls)
 app.get("/trash/:id", getATrashPoll)
 app.post("/trash", addTrashPoll)
 app.put("/trash/:id", updateTrashPoll)
@@ -34,6 +34,6 @@ app.delete("/trash/:id", deleteTrashPoll)
 // register controllers
 register(app).with(
   PingController,
-  TrashController,
+  // TrashController,
   ErrorHandlerController // needs to be the last
 )

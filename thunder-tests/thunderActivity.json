@@ -38,10 +38,10 @@
     "containerId": "",
     "name": "localhost:7000/trash",
     "url": "localhost:7000/trash",
-    "method": "POST",
+    "method": "GET",
     "sortNum": 0,
     "created": "2023-03-22T09:30:52.675Z",
-    "modified": "2023-03-22T10:25:41.339Z",
+    "modified": "2023-03-22T17:36:29.756Z",
     "headers": [
       {
         "name": "Accept",
@@ -57,7 +57,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"milton\",\n  \"password\": \"12345678\"\n}\n",
+      "raw": "{\n  \"name\": \"precious\",\n  \"password\": \"12345678\",\n  \"location\": \"delta\",\n  \"authType\": \"google\",\n  \"poll\": false\n}\n",
       "form": []
     },
     "tests": []
