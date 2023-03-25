@@ -24,6 +24,9 @@ app.use(express.urlencoded({ extended: false }));
 // API Test
 app.get("/", (req: Request, res: Response) => res.send("hi"))
 
+//API Auth Endpoints
+
+
 // API Endpoints
 app.get("/trash", getAllTrashPolls)
 app.get("/trash/:id", getATrashPoll)
