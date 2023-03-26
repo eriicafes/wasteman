@@ -22,4 +22,6 @@ export type Env = z.infer<typeof envSchema>
 
 const envSchema = z.object({
   PORT: z.string().default("5000").transform(Number),
+  SECRET: z.string(),
+  MONGO_URI: z.string(),
 })

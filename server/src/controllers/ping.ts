@@ -1,10 +1,11 @@
-import { TypedRequest, TypedResponse } from "@/types"
+import { Context } from "@/services"
+import { TypedRequest, TypedResponse } from "@/types/express"
 import { Controller } from "@/utils/controller"
 import { Application } from "express"
 
-export class PingController extends Controller {
+export class PingController extends Controller<Context> {
   route(app: Application) {
-    this.router.get("/", this.ping)
+    this.router.get("/", this.ping.bind(this))
 
     this.router.register(app)
   }
@@ -14,7 +15,7 @@ export class PingController extends Controller {
       success: true,
       message: "Ping successful",
       data: {
-        ping: this.container.ping.getPingResponse(),
+        ping: this.ctx.ping.getPingResponse(),
       },
     })
   }

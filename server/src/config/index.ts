@@ -1,1 +1,0 @@
-export const BCRYPT_ROUND = process.env.BCRYPT_ROUND

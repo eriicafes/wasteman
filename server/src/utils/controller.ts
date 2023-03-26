@@ -1,14 +1,13 @@
-import { Container } from "@/services"
 import { Application, RequestHandler, Router } from "express"
 
 /**
- * Base controller with injected service container and router.
+ * Base controller with injected context and router.
  *
- * All sub-controllers that extends this controller will have access to the shared service container
+ * All sub-controllers that extends this controller will have access to the shared context
  * and must implement the `route(app)` method to register itself to the application.
  */
-export abstract class Controller {
-  constructor(protected container: Container, private _router: Router) {}
+export abstract class Controller<T> {
+  constructor(protected ctx: T, private _router: Router) {}
 
   /**
    * Register controller to the application. It is intended that this method calls `this.router.register(app, path)`.
@@ -48,17 +47,18 @@ const asyncHandler = (handler: RequestHandler): RequestHandler => {
   }
 }
 
-type ControllerConstructor = new (...args: ConstructorParameters<typeof Controller>) => Controller
+type ControllerConstructor<T> = new (...args: ConstructorParameters<typeof Controller<T>>) => Controller<T>
 
 /**
  * Register multiple controllers to the application.
  * @param app Express application.
+ * @param context Shared application context.
  */
-export function register(app: Application) {
+export function register<T>(app: Application, context: T) {
   return {
-    with(...controllers: ControllerConstructor[]) {
+    with(...controllers: ControllerConstructor<T>[]) {
       for (const Controller of controllers) {
-        const controller = new Controller(Container.getInstance(), Router())
+        const controller = new Controller(context, Router())
         controller.route(app)
       }
     },

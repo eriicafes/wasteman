@@ -1,42 +1,22 @@
-import express, { Request, Response } from "express"
-import { connectDB } from "./config/db"
+import express from "express"
+import { AuthController } from "./controllers/auth"
 import { ErrorHandlerController } from "./controllers/error-handler"
 import { PingController } from "./controllers/ping"
-import {
-  addTrashPoll,
-  deleteTrashPoll,
-  getAllTrashPolls,
-  getATrashPoll,
-  TrashController,
-  updateTrashPoll
-} from "./controllers/trash.controller"
+import { Context } from "./services"
 import { register } from "./utils/controller"
 
-export const app = express()
+export function bootstrap(ctx: Context) {
+  const app = express()
 
-// apply middlewares
-app.use(express.json())
+  // apply middlewares
+  app.use(express.json())
 
-connectDB();
+  // register controllers
+  register(app, ctx).with(
+    PingController,
+    AuthController,
+    ErrorHandlerController // needs to be the last
+  )
 
-app.use(express.urlencoded({ extended: false }));
-
-// API Test
-app.get("/", (req: Request, res: Response) => res.send("hi"))
-
-//API Auth Endpoints
-
-
-// API Endpoints
-app.get("/trash", getAllTrashPolls)
-app.get("/trash/:id", getATrashPoll)
-app.post("/trash", addTrashPoll)
-app.put("/trash/:id", updateTrashPoll)
-app.delete("/trash/:id", deleteTrashPoll)
-
-// register controllers
-register(app).with(
-  PingController,
-  // TrashController,
-  ErrorHandlerController // needs to be the last
-)
+  return app
+}
