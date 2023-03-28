@@ -15,14 +15,12 @@ export default function Polls() {
 
         <div className="rounded-[24px] shadow-lg"></div>
 
-        {/* RESULTS */}
         <div className="text-[1.15rem]">
-          {/* RESULT HEAD */}
           <div className="my-4 flex items-center justify-between font-semibold">
             <h4>Result Polls</h4>
             <button>See All</button>
           </div>
-          {/* END OF RESULT HEAD */}
+
           <div className="rounded-[24px] shadow-lg">
             <div className="p-4">
               <div className="flex items-center justify-between">
@@ -51,7 +49,6 @@ export default function Polls() {
             </div>
           </div>
         </div>
-        {/* END OF RESULTS */}
       </div>
     </>
   )
