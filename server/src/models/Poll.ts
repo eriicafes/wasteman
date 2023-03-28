@@ -1,15 +1,15 @@
 import { IPoll } from "@/interfaces/poll"
 import { BaseSchemaType, DocumentType, ModelType } from "@/types/mongoose"
 import mongoose from "mongoose"
-import { GarbagePoint } from "./GarbagePoint"
+import { Point } from "./Point"
 
 export const PollSchema = new mongoose.Schema({
-  garbagePointId: {
+  pointId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: GarbagePoint.name,
+    ref: Point.name,
     required: true,
   },
-  garbageSiteId: {
+  siteId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "",
     required: true,
@@ -26,8 +26,8 @@ export class PollResource {
   public static json(doc: DocumentType<typeof PollSchema>): IPoll {
     return {
       id: doc._id!.toString(),
-      garbagePointId: doc.garbagePointId.toString(),
-      garbageSiteId: doc.garbageSiteId.toString(),
+      pointId: doc.pointId.toString(),
+      siteId: doc.siteId.toString(),
       votes: doc.votes,
     }
   }

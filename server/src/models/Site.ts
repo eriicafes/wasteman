@@ -1,8 +1,8 @@
-import { IGarbageSite } from "@/interfaces/garbage-site"
+import { ISite } from "@/interfaces/garbage-site"
 import { BaseSchemaType, DocumentType, ModelType } from "@/types/mongoose"
 import mongoose from "mongoose"
 
-export const GarbageSiteSchema = new mongoose.Schema(
+export const SiteSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -16,18 +16,18 @@ export const GarbageSiteSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-  } satisfies BaseSchemaType<IGarbageSite>,
+  } satisfies BaseSchemaType<ISite>,
   {
     timestamps: true,
   }
 )
 
-export const GarbageSite =
-  (mongoose.models.GarbageSite as ModelType<typeof GarbageSiteSchema>) ||
-  mongoose.model("GarbageSite", GarbageSiteSchema)
+export const Site =
+  (mongoose.models.Site as ModelType<typeof SiteSchema>) ||
+  mongoose.model("Site", SiteSchema)
 
-export class GarbageSiteResource {
-  public static json(doc: DocumentType<typeof GarbageSiteSchema>): IGarbageSite {
+export class SiteResource {
+  public static json(doc: DocumentType<typeof SiteSchema>): ISite {
     return {
       id: doc._id!.toString(),
       name: doc.name,

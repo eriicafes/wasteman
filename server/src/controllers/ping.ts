@@ -1,16 +1,14 @@
 import { Context } from "@/services"
 import { TypedRequest, TypedResponse } from "@/types/express"
 import { Controller } from "@/utils/controller"
-import { Application } from "express"
+import { Router } from "express"
 
 export class PingController extends Controller<Context> {
-  route(app: Application) {
-    this.router.get("/", this.ping.bind(this))
-
-    this.router.register(app)
+  route(router: Router) {
+    router.get("/", this.ping)
   }
 
-  public async ping(_req: TypedRequest, res: TypedResponse) {
+  public async ping(_req: TypedRequest, res: TypedResponse<{ ping: string }>) {
     res.send({
       success: true,
       message: "Ping successful",

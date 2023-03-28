@@ -1,9 +1,9 @@
 import { IVote } from "@/interfaces/vote"
 import { BaseSchemaType, DocumentType, ModelType } from "@/types/mongoose"
 import mongoose from "mongoose"
-import { GarbagePoint } from "./GarbagePoint"
-import { GarbageSite } from "./GarbageSite"
+import { Point } from "./Point"
 import { Poll } from "./Poll"
+import { Site } from "./Site"
 import { User } from "./User"
 
 export const VoteSchema = new mongoose.Schema(
@@ -18,14 +18,14 @@ export const VoteSchema = new mongoose.Schema(
       ref: Poll.name,
       required: true,
     },
-    garbagePointId: {
+    pointId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: GarbagePoint.name,
+      ref: Point.name,
       required: true,
     },
-    garbageSiteId: {
+    siteId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: GarbageSite.name,
+      ref: Site.name,
       required: true,
     },
   } satisfies BaseSchemaType<IVote>,
@@ -42,8 +42,8 @@ export class VoteResource {
       id: doc._id!.toString(),
       userId: doc.userId.toString(),
       pollId: doc.pollId.toString(),
-      garbagePointId: doc.garbagePointId.toString(),
-      garbageSiteId: doc.garbageSiteId.toString(),
+      pointId: doc.pointId.toString(),
+      siteId: doc.siteId.toString(),
       createdAt: doc.createdAt.toJSON(),
     }
   }

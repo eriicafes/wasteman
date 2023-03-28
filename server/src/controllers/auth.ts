@@ -6,16 +6,16 @@ import { validate } from "@/pipes/validate"
 import { Context } from "@/services"
 import { TypedRequest, TypedResponse } from "@/types/express"
 import { Controller } from "@/utils/controller"
-import { Application } from "express"
+import { Router } from "express"
 import { z } from "zod"
 
 export class AuthController extends Controller<Context> {
-  route(app: Application) {
-    this.router.get("/profile", authenticate(this.ctx), this.getProfile)
-    this.router.post("/signin", this.signin)
-    this.router.post("/signup", this.signup)
+  public base = "/auth"
 
-    this.router.register(app, "/auth")
+  route(router: Router) {
+    router.get("/profile", authenticate(this.ctx), this.getProfile)
+    router.post("/signin", this.signin)
+    router.post("/signup", this.signup)
   }
 
   /**

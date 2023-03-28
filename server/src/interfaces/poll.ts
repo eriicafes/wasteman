@@ -1,6 +1,6 @@
 export interface IPoll {
   id: string
-  garbagePointId: string
-  garbageSiteId: string
+  pointId: string
+  siteId: string
   votes: number
 }

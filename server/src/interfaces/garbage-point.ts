@@ -1,6 +1,6 @@
-export interface IGarbagePoint {
+export interface IPoint {
   id: string
-  garbageSiteId: string
+  siteId: string
   name: string
   latitude: number
   longitude: number

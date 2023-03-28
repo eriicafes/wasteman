@@ -2,7 +2,7 @@ export interface IVote {
   id: string
   userId: string
   pollId: string
-  garbagePointId: string
-  garbageSiteId: string
+  pointId: string
+  siteId: string
   createdAt: string
 }

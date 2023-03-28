@@ -1,13 +1,13 @@
-import { IGarbagePoint } from "@/interfaces/garbage-point"
+import { IPoint } from "@/interfaces/garbage-point"
 import { BaseSchemaType, DocumentType, ModelType } from "@/types/mongoose"
 import mongoose from "mongoose"
-import { GarbageSite } from "./GarbageSite"
+import { Site } from "./Site"
 
-export const GarbagePointSchema = new mongoose.Schema(
+export const PointSchema = new mongoose.Schema(
   {
-    garbageSiteId: {
+    siteId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: GarbageSite.name,
+      ref: Site.name,
       required: true,
     },
     name: {
@@ -30,21 +30,21 @@ export const GarbagePointSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-  } satisfies BaseSchemaType<IGarbagePoint>,
+  } satisfies BaseSchemaType<IPoint>,
   {
     timestamps: true,
   }
 )
 
-export const GarbagePoint =
-  (mongoose.models.GarbagePoint as ModelType<typeof GarbagePointSchema>) ||
-  mongoose.model("GarbagePoint", GarbagePointSchema)
+export const Point =
+  (mongoose.models.Point as ModelType<typeof PointSchema>) ||
+  mongoose.model("Point", PointSchema)
 
-export class GarbagePointResource {
-  public static json(doc: DocumentType<typeof GarbagePointSchema>): IGarbagePoint {
+export class PointResource {
+  public static json(doc: DocumentType<typeof PointSchema>): IPoint {
     return {
       id: doc._id!.toString(),
-      garbageSiteId: doc.garbageSiteId.toString(),
+      siteId: doc.siteId.toString(),
       name: doc.name,
       openTime: doc.openTime,
       closeTime: doc.closeTime,
