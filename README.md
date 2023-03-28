@@ -1,6 +1,6 @@
 # Wasteman
 
-Wateman is a waste management application aimed at regulating waste disposal and environmental sanitation in an intiutive and easy manner by utilizing social integrations.
+Wasteman is a waste management application aimed at regulating waste disposal and environmental sanitation in an intiutive and easy manner by utilizing social integrations.
 
 ### This repository consists of an Express server and a Next.js client.
 

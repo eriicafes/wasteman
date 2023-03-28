@@ -1,10 +1,11 @@
 import { ValidationError } from "@/errors/ValidationError"
-import { TypedNextFn, TypedRequest, TypedResponse } from "@/types"
+import { Context } from "@/services"
+import { TypedNextFn, TypedRequest, TypedResponse } from "@/types/express"
 import { Controller } from "@/utils/controller"
 import { isHttpProblem, NotFound } from "@curveball/http-errors"
 import { Application } from "express"
 
-export class ErrorHandlerController extends Controller {
+export class ErrorHandlerController extends Controller<Context> {
   route(app: Application) {
     // not found route
     app.use((_req: TypedRequest, _res: TypedResponse, next: TypedNextFn) => {
