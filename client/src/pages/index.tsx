@@ -1,9 +1,6 @@
 import Head from "next/head"
-import { useGeolocated } from "react-geolocated"
 
 export default function Home() {
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated()
-
   return (
     <>
       <Head>
@@ -12,27 +9,18 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relative flex h-screen w-screen flex-col items-center md:justify-center">
-        <div className="map flex h-full w-full justify-center bg-map"></div>
-        <div className="modal fixed bottom-0 m-3 flex flex-col items-center rounded-[25px] bg-gray-900 p-3 shadow-customShadow md:bottom-52 md:m-5 md:w-96 md:p-5">
-          <h1 className="py-3 text-center text-2xl font-extrabold text-gray-200">Waste Management System</h1>
-          <p className="text py-3 text-center text-xs text-gray-300">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure accusantium fugiat laboriosam laudantium
-            itaque
-          </p>
-          <span className="mt-3 flex w-full cursor-pointer items-center justify-center rounded-[25px] bg-indigo-800 py-3  text-sm font-semibold  text-gray-100  hover:bg-indigo-700 hover:text-gray-200">
-            Get Started
-          </span>
-        </div>
-        {isGeolocationEnabled && (
-          <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-black opacity-90">
-            <div className="space-y-3 bg-white p-3 font-semibold">
-              <h1 className="text-xl font-bold">Users geolocation info</h1>
-              <p>Latitude: {coords?.latitude}</p>
-              <p>Longitude: {coords?.longitude}</p>
-            </div>
+      <main className="relative h-screen w-screen">
+        <div className="h-full w-full bg-[url('/map-placeholder.jpg')]"></div>
+        <div className="absolute bottom-0 z-50 flex w-full items-center justify-center p-3">
+          <div className="max-w-xs shadow-spectre rounded-md p-2 space-y-3 flex flex-col items-center bg-slate-800  md:max-w-sm md:space-y-4">
+            <h1 className="text-xl font-bold text-gray-300 md:text-2xl">Waste Management System</h1>
+            <p className="text-gray-500 text-xs text-center md:text-sm">
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et consequatur sunt aspernatur quas, nulla
+              officia consequuntur hic neque rem odit harum tempora.
+            </p>
+            <button className="bg-blue-600 text-gray-200 text-sm w-full m-1 p-2 rounded-md hover:bg-purple-700 md:p-3">Get Started</button>
           </div>
-        )}
+        </div>
       </main>
     </>
   )

@@ -4,11 +4,8 @@ module.exports = {
   theme: {
     extend: {
       boxShadow:{
-        customShadow: '0px 2px 7px rgba(0, 0, 0, 0.35)'
+        spectre: '0px 2px 7px rgba(0, 0, 0, 0.35)'
       },
-      backgroundImage: {
-        'map': "url('../assets/map-image2-mobile.jpg')"
-      }
     },
   },
   plugins: [],
