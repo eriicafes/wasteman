@@ -1,7 +1,7 @@
 import { TokenPayload } from "@/interfaces/token"
 import { IUser } from "@/interfaces/user"
 import { authenticate } from "@/middlewares/authenticate"
-import { getUser } from "@/pipes/user"
+import { getAuth } from "@/pipes/auth"
 import { validate } from "@/pipes/validate"
 import { Context } from "@/services"
 import { TypedRequest, TypedResponse } from "@/types/express"
@@ -13,7 +13,7 @@ export class AuthController extends Controller<Context> {
   public base = "/auth"
 
   route(router: Router) {
-    router.get("/profile", authenticate(this.ctx), this.getProfile)
+    router.get("/profile", authenticate(this.ctx, "user"), this.getProfile)
     router.post("/signin", this.signin)
     router.post("/signup", this.signup)
   }
@@ -22,7 +22,7 @@ export class AuthController extends Controller<Context> {
    * Get authenticated user
    */
   public async getProfile(req: TypedRequest, res: TypedResponse<IUser>) {
-    const user = getUser(req)
+    const user = getAuth(req, "user")
 
     res.json({
       success: true,

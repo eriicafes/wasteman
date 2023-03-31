@@ -7,12 +7,12 @@ import { Application, RequestHandler, Router } from "express"
  * and must implement the `route(router)` method to register it's routes to the application.
  */
 export abstract class Controller<T> {
-  constructor(protected ctx: T) { }
+  constructor(protected ctx: T) {}
 
   /**
    * Controller base path.
    */
-  public base: string | undefined = undefined
+  public readonly base: string | undefined = undefined
 
   /**
    * Register controller routes.
@@ -24,7 +24,7 @@ export abstract class Controller<T> {
    * Configure application with controller.
    * @param app Express application.
    */
-  configure(app: Application): void { }
+  configure(app: Application): void {}
 }
 
 type ControllerConstructor<T> = new (...args: ConstructorParameters<typeof Controller<T>>) => Controller<T>
@@ -49,11 +49,13 @@ export function register<T>(app: Application, context: T) {
           const value = controller[key as keyof typeof controller]
           if (typeof value !== "function") continue
 
-          controller[key as keyof typeof controller] = asyncHandler(value.bind(controller) as any) as any
+          controller[key as Exclude<keyof typeof controller, "base">] = asyncHandler(
+            value.bind(controller) as any
+          ) as any
         }
 
         // configure application with controller
-        controller.configure.call(controller, app)
+        controller.configure(app)
         // register routes
         controller.route(router)
 

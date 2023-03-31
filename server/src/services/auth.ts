@@ -32,14 +32,14 @@ export class AuthService {
     // check if user exists
     if (!user) throw new Unauthorized("Invalid email address or password")
 
+    // user must have an auth type of "password" and their password must not be an empty string
+    if (user.auth !== "password" || !user.password) {
+      throw new Unauthorized("Invalid email address or password")
+    }
+
     // compare password
     const match = await user.comparePassword(password)
     if (!match) throw new Unauthorized("Invalid email address or password")
-
-    // user must have an auth type of "password" and their password must not be an empty string
-    if (!user || user.auth !== "password" || !user.password) {
-      throw new Unauthorized("Invalid email address or password")
-    }
 
     // sign jwt token with the email, auth type and hashed password
     const token = await this.jwtService.sign(user.email, "password", user.password)

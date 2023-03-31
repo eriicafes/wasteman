@@ -21,6 +21,7 @@ export class ConfigService {
 export type Env = z.infer<typeof envSchema>
 
 const envSchema = z.object({
+  NODE_ENV: z.string().default("production"),
   PORT: z.string().default("5000").transform(Number),
   SECRET: z.string(),
   MONGO_URI: z.string(),

@@ -6,7 +6,7 @@ import { isHttpProblem, NotFound } from "@curveball/http-errors"
 import { Application } from "express"
 
 export class ErrorHandlerController extends Controller<Context> {
-  route() { }
+  route() {}
 
   configure(app: Application) {
     // not found route
@@ -29,6 +29,11 @@ export class ErrorHandlerController extends Controller<Context> {
           success: false,
           message: err.detail ?? err.title,
         })
+      }
+
+      // log unknown errors in development mode
+      if (this.ctx.config.env.NODE_ENV === "development") {
+        console.log(err)
       }
 
       res.status(500).json({
