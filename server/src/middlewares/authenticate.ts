@@ -1,18 +1,36 @@
+import { ModeratorResource } from "@/models/Moderator"
 import { UserResource } from "@/models/User"
 import { Context } from "@/services"
 import { Unauthorized } from "@curveball/http-errors"
 import { Request, RequestHandler } from "express"
 
-export function authenticate(ctx: Context): RequestHandler {
+export function authenticate(ctx: Context, type: "user" | "moderator" | "all"): RequestHandler {
   return async (req, _res, next) => {
-    const token = getTokenFromHeaders(req)
-    if (!token) throw new Unauthorized("Missing bearer token")
+    try {
+      const token = getTokenFromHeaders(req)
+      if (!token) throw new Unauthorized("Missing bearer token")
 
-    const { user } = await ctx.auth.verifyToken(token)
+      const authenticateUser = async () => {
+        const { user } = await ctx.auth.verifyToken(token)
+        req.user = UserResource.json(user)
+      }
 
-    req.user = UserResource.json(user)
+      const authenticateModerator = async () => {
+        const { moderator } = await ctx.moderatorAuth.verifyToken(token)
+        req.moderator = ModeratorResource.json(moderator)
+      }
 
-    next()
+      // authenticate user
+      if (type === "user") await authenticateUser()
+      // authenticate moderator
+      if (type === "moderator") await authenticateModerator()
+      // authenticate user or moderator
+      if (type === "all") await Promise.allSettled([authenticateUser(), authenticateModerator()])
+
+      next()
+    } catch (err) {
+      next(new Unauthorized())
+    }
   }
 }
 

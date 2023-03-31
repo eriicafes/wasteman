@@ -4,47 +4,27 @@ import { Application, RequestHandler, Router } from "express"
  * Base controller with injected context and router.
  *
  * All sub-controllers that extends this controller will have access to the shared context
- * and must implement the `route(app)` method to register itself to the application.
+ * and must implement the `route(router)` method to register it's routes to the application.
  */
 export abstract class Controller<T> {
-  constructor(protected ctx: T, private _router: Router) {}
+  constructor(protected ctx: T) {}
 
   /**
-   * Register controller to the application. It is intended that this method calls `this.router.register(app, path)`.
+   * Controller base path.
+   */
+  public readonly base: string | undefined = undefined
+
+  /**
+   * Register controller routes.
+   * @param router Express router.
+   */
+  abstract route(router: Router): void
+
+  /**
+   * Configure application with controller.
    * @param app Express application.
    */
-  abstract route(app: Application): void
-
-  /**
-   * router methods binds the `this` keyword to the controller instance.
-   */
-  protected router = {
-    use: (...handlers: RequestHandler[]) => void this._router.use(...handlers.map((h) => asyncHandler(h.bind(this)))),
-    get: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.get(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
-    post: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.post(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
-    put: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.put(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
-    patch: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.patch(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
-    delete: (path: string, ...handlers: RequestHandler[]) =>
-      void this._router.delete(path, ...handlers.map((h) => asyncHandler(h.bind(this)))),
-    register: (app: Application, path?: string) => void (path ? app.use(path, this._router) : app.use(this._router)),
-  }
-}
-
-/**
- * Wrap async handler function to catch and prevent errors from exiting the nodejs process.
- */
-const asyncHandler = (handler: RequestHandler): RequestHandler => {
-  return async (req, res, next) => {
-    try {
-      await Promise.resolve(handler(req, res, next))
-    } catch (err) {
-      next(err)
-    }
-  }
+  configure(app: Application): void {}
 }
 
 type ControllerConstructor<T> = new (...args: ConstructorParameters<typeof Controller<T>>) => Controller<T>
@@ -58,9 +38,44 @@ export function register<T>(app: Application, context: T) {
   return {
     with(...controllers: ControllerConstructor<T>[]) {
       for (const Controller of controllers) {
-        const controller = new Controller(context, Router())
-        controller.route(app)
+        // instantiate controller
+        const controller = new Controller(context)
+        const router = Router()
+
+        // bind controller methods
+        for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(controller))) {
+          if (key === "constructor" || key === "route" || key === "configure") continue
+
+          const value = controller[key as keyof typeof controller]
+          if (typeof value !== "function") continue
+
+          controller[key as Exclude<keyof typeof controller, "base">] = asyncHandler(
+            value.bind(controller) as any
+          ) as any
+        }
+
+        // configure application with controller
+        controller.configure(app)
+        // register routes
+        controller.route(router)
+
+        // bind router to application
+        if (controller.base) app.use(controller.base, router)
+        else app.use(router)
       }
     },
+  }
+}
+
+/**
+ * Wrap async handler function to catch and prevent errors from exiting the nodejs process.
+ */
+const asyncHandler = (handler: RequestHandler): RequestHandler => {
+  return async (req, res, next) => {
+    try {
+      await Promise.resolve(handler(req, res, next))
+    } catch (err) {
+      next(err)
+    }
   }
 }

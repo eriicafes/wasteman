@@ -1,6 +1,16 @@
 export interface IPoll {
   id: string
-  garbagePointId: string
-  garbageSiteId: string
-  votes: number
+  pointId: string
+  voters: IVoter[]
+  closed: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface IVoter {
+  userId: string
+  email: string
+  firstName: string
+  lastName: string
+  votedAt: string
 }

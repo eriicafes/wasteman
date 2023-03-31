@@ -1,28 +1,28 @@
 import { TokenPayload } from "@/interfaces/token"
 import { IUser } from "@/interfaces/user"
 import { authenticate } from "@/middlewares/authenticate"
-import { getUser } from "@/pipes/user"
+import { getAuth } from "@/pipes/auth"
 import { validate } from "@/pipes/validate"
 import { Context } from "@/services"
 import { TypedRequest, TypedResponse } from "@/types/express"
 import { Controller } from "@/utils/controller"
-import { Application } from "express"
+import { Router } from "express"
 import { z } from "zod"
 
 export class AuthController extends Controller<Context> {
-  route(app: Application) {
-    this.router.get("/profile", authenticate(this.ctx), this.getProfile)
-    this.router.post("/signin", this.signin)
-    this.router.post("/signup", this.signup)
+  public base = "/auth"
 
-    this.router.register(app, "/auth")
+  route(router: Router) {
+    router.get("/profile", authenticate(this.ctx, "user"), this.getProfile)
+    router.post("/signin", this.signin)
+    router.post("/signup", this.signup)
   }
 
   /**
    * Get authenticated user
    */
   public async getProfile(req: TypedRequest, res: TypedResponse<IUser>) {
-    const user = getUser(req)
+    const user = getAuth(req, "user")
 
     res.json({
       success: true,

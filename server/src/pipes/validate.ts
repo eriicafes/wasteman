@@ -1,9 +1,21 @@
 import { ValidationError } from "@/errors/ValidationError"
 import { Request } from "express"
-import { ZodType } from "zod"
+import { ZodType, ZodTypeDef } from "zod"
 
-export async function validate<T>(request: Request, schema: ZodType<T>) {
-  const validatedData = await schema.spa(request.body)
+/**
+ * Validate request body or query.
+ *
+ * @param request Express Request
+ * @param schema Zod schema
+ * @param field Validation field
+ * @returns Validated data
+ */
+export async function validate<Input, Def extends ZodTypeDef = ZodTypeDef, Output = Input>(
+  request: Request,
+  schema: ZodType<Input, Def, Output>,
+  field: "body" | "query" = "body"
+) {
+  const validatedData = await schema.spa(request[field])
 
   if (!validatedData.success) throw new ValidationError(validatedData.error)
 
