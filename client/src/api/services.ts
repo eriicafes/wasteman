@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { http, Input, InputWithParams } from "./http"
+import { http, Input, InputWithParams, InputWithParamsData } from "./http"
 import {
   ApiSuccessResponse,
   AuthSchema,
@@ -9,7 +9,7 @@ import {
   IUser,
   ModeratorsSchema,
   PointsSchema,
-  TokenPayload,
+  TokenPayload
 } from "./types"
 
 export namespace auth {
@@ -61,7 +61,7 @@ export namespace points {
 
   export type UpdatePointData = z.infer<typeof PointsSchema.update>
 
-  export async function updatePoint(input: InputWithParams<"id", UpdatePointData>) {
+  export async function updatePoint(input: InputWithParamsData<"id", UpdatePointData>) {
     const { data } = await http.put<ApiSuccessResponse<IPoint>>(`/points/${input.params.id}`, input.data)
     return data
   }
