@@ -1,1 +1,1 @@
-export * from "./PointBox";
+export * from "./PointBox"
