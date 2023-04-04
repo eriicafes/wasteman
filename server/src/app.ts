@@ -1,3 +1,5 @@
+import compression from "compression"
+import cors from "cors"
 import express from "express"
 import { AuthController } from "./controllers/auth"
 import { ErrorHandlerController } from "./controllers/error-handler"
@@ -13,6 +15,8 @@ export function bootstrap(ctx: Context) {
 
   // apply middlewares
   app.use(express.json())
+  app.use(cors())
+  app.use(compression())
 
   // register controllers
   register(app, ctx).with(

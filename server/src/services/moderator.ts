@@ -1,10 +1,16 @@
 import { IModeratorDoc, Moderator } from "@/models/Moderator"
 import { PickModel } from "@/types/mongoose"
+import { Conflict } from "@curveball/http-errors"
 import { Types } from "mongoose"
 
 export class ModeratorService {
   public async create(data: PickModel<IModeratorDoc>) {
-    const moderator = await Moderator.create(data)
+    const moderator = await Moderator.create(data).catch((err) => {
+      if (err.code === 11000) {
+        throw new Conflict("Moderator already exists")
+      }
+      throw err
+    })
 
     return moderator
   }

@@ -14,15 +14,15 @@ export class PointService {
 
   public async findAll(data: { lat: number; long: number; distance: number }) {
     const points = await Point.find({
-      location: {
-        $nearSphere: {
-          $geometry: {
-            type: "Point",
-            coordinates: [data.long, data.lat],
-          },
-          $maxDistance: data.distance,
-        },
-      },
+      // location: {
+      //   $nearSphere: {
+      //     $geometry: {
+      //       type: "Point",
+      //       coordinates: [data.long, data.lat],
+      //     },
+      //     $maxDistance: data.distance,
+      //   },
+      // },
     })
 
     return points

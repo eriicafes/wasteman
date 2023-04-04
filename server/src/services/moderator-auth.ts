@@ -1,4 +1,4 @@
-import { Conflict, Unauthorized } from "@curveball/http-errors"
+import { Unauthorized } from "@curveball/http-errors"
 import { JwtService } from "./jwt"
 import { ModeratorService } from "./moderator"
 
@@ -6,18 +6,11 @@ export class ModeratorAuthService {
   constructor(protected moderatorService: ModeratorService, protected jwtService: JwtService) {}
 
   public async create(email: string, password: string, data: ModeratorPasswordCreateData) {
-    const moderator = await this.moderatorService
-      .create({
-        email,
-        password,
-        ...data,
-      })
-      .catch((err) => {
-        if (err.code === 11000) {
-          throw new Conflict("Moderator already exists")
-        }
-        throw err
-      })
+    const moderator = await this.moderatorService.create({
+      email,
+      password,
+      ...data,
+    })
 
     return { moderator }
   }

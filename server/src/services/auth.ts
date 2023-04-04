@@ -1,4 +1,4 @@
-import { Conflict, InternalServerError, Unauthorized } from "@curveball/http-errors"
+import { InternalServerError, Unauthorized } from "@curveball/http-errors"
 import { JwtService } from "./jwt"
 import { UserService } from "./user"
 
@@ -6,19 +6,12 @@ export class AuthService {
   constructor(protected userService: UserService, protected jwtService: JwtService) {}
 
   public async createWithPassword(email: string, password: string, data: UserPasswordCreateData) {
-    const user = await this.userService
-      .create({
-        auth: "password",
-        email,
-        password,
-        ...data,
-      })
-      .catch((err) => {
-        if (err.code === 11000) {
-          throw new Conflict("Account already exists")
-        }
-        throw err
-      })
+    const user = await this.userService.create({
+      auth: "password",
+      email,
+      password,
+      ...data,
+    })
 
     // sign jwt token with the email, auth type and hashed password
     const token = await this.jwtService.sign(user.email, "password", user.password!)

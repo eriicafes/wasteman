@@ -3,7 +3,7 @@ import { authenticate } from "@/middlewares/authenticate"
 import { PollResource } from "@/models/Poll"
 import { getAuth } from "@/pipes/auth"
 import { Context } from "@/services"
-import { Params, TypedRequest, TypedResponse } from "@/types/express"
+import { TypedRequest, TypedResponse } from "@/types/express"
 import { Controller } from "@/utils/controller"
 import { Router } from "express"
 
@@ -16,7 +16,7 @@ export class PollsController extends Controller<Context> {
     router.get("/", this.getUserPolls)
   }
 
-  public async getUserPolls(req: TypedRequest<Params<"id">>, res: TypedResponse<IPoll[]>) {
+  public async getUserPolls(req: TypedRequest, res: TypedResponse<IPoll[]>) {
     const user = getAuth(req, "user")
 
     const polls = await this.ctx.poll.findAllForUser(user.id)
