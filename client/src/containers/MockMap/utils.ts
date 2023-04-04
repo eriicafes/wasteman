@@ -1,10 +1,12 @@
 import { Dimensions } from "@/hooks/use-dimensions"
-import { Coord, Position } from "./Map"
+
+export type Position = { x: number; y: number }
+export type Coords = { long: number; lat: number }
 
 /**
  * Convert coordinates from degrees to decimal.
  */
-export function coordToPosition(coord: Coord): Position {
+export function coordsToPosition(coord: Coords): Position {
   return {
     x: 180 + coord.long,
     y: 90 - coord.lat,
@@ -14,7 +16,7 @@ export function coordToPosition(coord: Coord): Position {
 /**
  * Convert coordinates from decimal to degrees.
  */
-export function positionToCoord(position: Position): Coord {
+export function positionToCoords(position: Position): Coords {
   return {
     long: -180 + position.x,
     lat: 90 - position.y,

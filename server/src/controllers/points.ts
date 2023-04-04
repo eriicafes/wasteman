@@ -15,8 +15,8 @@ export class PointsController extends Controller<Context> {
   public base = "/points"
 
   route(router: Router) {
-    router.get("/", authenticate(this.ctx, "all"), this.getPoints)
-    router.get("/:id", authenticate(this.ctx, "all"), this.getPoint)
+    router.get("/", this.getPoints)
+    router.get("/:id", this.getPoint)
 
     router.post("/", authenticate(this.ctx, "moderator"), this.createPoint)
     router.put("/:id", authenticate(this.ctx, "moderator"), this.updatePoint)
@@ -35,7 +35,7 @@ export class PointsController extends Controller<Context> {
   }
 
   public async getPoints(req: TypedRequest, res: TypedResponse<IPoint[]>) {
-    const query = await validate(req, PointsSchema.points, "query")
+    const query = await validate(req, PointsSchema.point, "query")
 
     const points = await this.ctx.point.findAll(query)
 
@@ -234,8 +234,8 @@ export class PointsController extends Controller<Context> {
   }
 }
 
-class PointsSchema {
-  public static points = z.object({
+export class PointsSchema {
+  public static point = z.object({
     lat: z.string().transform((val) => parseFloat(val)),
     long: z.string().transform((val) => parseFloat(val)),
     distance: z.string().transform((val) => parseFloat(val)),
@@ -243,8 +243,12 @@ class PointsSchema {
 
   public static create = z.object({
     name: z.string(),
-    lat: z.number(),
-    long: z.number(),
+    lat: z.number().refine((val) => val > -90 && val < 90, {
+      message: "Latitude out of range, should be within -90 and 90",
+    }),
+    long: z.number().refine((val) => val > -180 && val < 180, {
+      message: "Longitude out of range, should be within -180 and 180",
+    }),
     openTime: z.string(),
     closeTime: z.string(),
   })

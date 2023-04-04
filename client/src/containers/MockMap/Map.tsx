@@ -1,37 +1,55 @@
 import { useDimensions } from "@/hooks/use-dimensions"
-import { MouseEvent, ReactNode, useRef } from "react"
-import { MockMapDimensionsProvider } from "./context"
-import { positionToCoord, scalePositionFromMap } from "./utils"
-
-export type Position = { x: number; y: number }
-export type Coord = { long: number; lat: number }
+import { MouseEvent, ReactNode, useCallback, useRef } from "react"
+import { MockMapDimensionsContext, MockMapHandlePointContext } from "./context"
+import { Coords, positionToCoords, scalePositionFromMap } from "./utils"
 
 type Props = {
-  onPoint?: (coord: Coord) => void
+  onPoint?: (coords: Coords) => void
   children: ReactNode
 }
 
-export function MockMap(props: Props) {
+export function MockMap({ onPoint, children }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const dimensions = useDimensions(wrapperRef)
 
-  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
-    if (!props.onPoint) return
-    const rect = wrapperRef.current?.getBoundingClientRect()
+  const handlePoint = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (!wrapperRef.current) return null
+      const rect = wrapperRef.current.getBoundingClientRect()
 
-    const x = e.clientX + (rect?.x ?? 0)
-    const y = e.clientY + (rect?.y ?? 0)
+      const x = e.clientX - rect.x
+      const y = e.clientY - rect.y
 
-    const scaledPosition = scalePositionFromMap({ x, y }, dimensions)
-    const coord = positionToCoord(scaledPosition)
-    props.onPoint(coord)
-  }
+      const scaledPosition = scalePositionFromMap({ x, y }, dimensions)
+      const coords = positionToCoords(scaledPosition)
+      return coords
+    },
+    [dimensions]
+  )
+
+  const handleClick = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (!onPoint) return
+
+      const coords = handlePoint(e)
+      if (!coords) return
+
+      onPoint(coords)
+    },
+    [onPoint, handlePoint]
+  )
 
   return (
-    <MockMapDimensionsProvider dimensions={dimensions}>
-      <div ref={wrapperRef} onClick={handleClick} className="h-full w-full bg-[url('/map-placeholder.jpg')] bg-center">
-        {props.children}
-      </div>
-    </MockMapDimensionsProvider>
+    <MockMapHandlePointContext.Provider value={handlePoint}>
+      <MockMapDimensionsContext.Provider value={dimensions}>
+        <div
+          ref={wrapperRef}
+          onClick={handleClick}
+          className="h-full w-full bg-[url('/map-placeholder.jpg')] bg-center"
+        >
+          {children}
+        </div>
+      </MockMapDimensionsContext.Provider>
+    </MockMapHandlePointContext.Provider>
   )
 }

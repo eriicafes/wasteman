@@ -24,6 +24,9 @@ export interface IPoint {
 
 export interface IPointLocation {
   type: "Point"
+  /**
+   * Point coordinates [longitude, latitude]
+   */
   coordinates: [number, number]
 }
 

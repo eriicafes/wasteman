@@ -1,4 +1,10 @@
-export function RecentVotes() {
+import { IPoint } from "@/api/types"
+
+type Props = {
+  point: IPoint
+}
+
+export function RecentVotes({ point }: Props) {
   return (
     <div className="rounded-2xl bg-white shadow-md">
       <div className="flex justify-between px-3 pt-2.5">

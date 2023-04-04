@@ -1,44 +1,38 @@
-import { Coord, MockMap } from "@/containers/MockMap/Map"
-import { Marker } from "@/containers/MockMap/Marker"
+import { queries } from "@/api/queries"
+import { IPoint } from "@/api/types"
+import { Coords, MockMap, MockMarker } from "@/containers/MockMap"
 import { PointBox } from "@/containers/PointBox"
-import { Sidebar } from "@/containers/Sidebar"
+import { Sidebar, useSidebarStore } from "@/containers/Sidebar"
 import { WelcomeBox } from "@/containers/WelcomeBox"
+import { Bars3Icon } from "@heroicons/react/20/solid"
+import { useQuery } from "@tanstack/react-query"
 import Head from "next/head"
 import { useState } from "react"
 
-const points: { name: string; location: Coord }[] = [
-  {
-    name: "Kitchen",
-    location: {
-      lat: 80,
-      long: 60,
-    },
-  },
-  {
-    name: "Station",
-    location: {
-      lat: 13,
-      long: 120,
-    },
-  },
-  {
-    name: "Town",
-    location: {
-      lat: 10,
-      long: 70,
-    },
-  },
-  {
-    name: "Plot",
-    location: {
-      lat: 40,
-      long: 60,
-    },
-  },
-]
-
 export default function Home() {
-  const [pos, setPos] = useState<Coord>()
+  const toggle = useSidebarStore((s) => s.toggle)
+  const goto = useSidebarStore((s) => s.goto)
+  const setCoords = useSidebarStore((s) => s.setCoords)
+
+  const moderator = useQuery({ ...queries.moderators.profile, retry: false })
+
+  const points = useQuery(
+    queries.points.all({
+      data: {
+        lat: 0,
+        long: 0,
+        distance: 5000,
+      },
+    })
+  )
+  const [point, setPoint] = useState<IPoint>()
+
+  const addPoint = (coords: Coords) => {
+    if (!moderator.data) return
+
+    setCoords(coords)
+    goto("add-point")
+  }
 
   return (
     <>
@@ -48,22 +42,30 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <main className="fixed inset-0 h-screen w-screen">
-        <MockMap onPoint={setPos}>
-          {points.map((point) => (
-            <Marker key={point.name} location={point.location}>
-              <div className="cursor-pointer rounded-full bg-blue-500 px-4 py-2 text-white transition-transform duration-300 hover:scale-105">
-                <p>{point.name}</p>
+        <MockMap onPoint={addPoint}>
+          {points.data?.data.map((point) => (
+            <MockMarker key={point.name} location={point.location} onPoint={() => setPoint(point)}>
+              <div className="group cursor-pointer rounded-full bg-blue-500/70 p-2 text-white transition-transform hover:scale-110">
+                <div className="h-4 w-4 rounded-full bg-white"></div>
               </div>
-            </Marker>
+            </MockMarker>
           ))}
         </MockMap>
 
         <Sidebar />
 
-        {pos && <PointBox onClose={() => setPos(undefined)} />}
+        {point && <PointBox pointId={point.id} onClose={() => setPoint(undefined)} />}
 
         <WelcomeBox />
+
+        {/* controls */}
+        <div className="absolute top-4 right-4 flex items-center gap-4">
+          <button onClick={() => toggle()} className="rounded-full bg-white p-2">
+            <Bars3Icon className="h-5 w-5 text-gray-700" />
+          </button>
+        </div>
       </main>
     </>
   )

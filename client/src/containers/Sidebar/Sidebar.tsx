@@ -1,4 +1,7 @@
-import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/20/solid"
+import { queries } from "@/api/queries"
+import { removeToken } from "@/utils/token"
+import { ArrowLeftOnRectangleIcon, ChevronLeftIcon, XMarkIcon } from "@heroicons/react/20/solid"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
 import { useSidebarStore } from "./store"
@@ -15,6 +18,10 @@ export function Sidebar() {
   const toggle = useSidebarStore((s) => s.toggle)
   const goto = useSidebarStore((s) => s.goto)
 
+  const user = useQuery(queries.auth.profile)
+  const moderator = useQuery(queries.moderators.profile)
+  const qc = useQueryClient()
+
   useEffect(() => {
     if (!open) return
 
@@ -27,9 +34,16 @@ export function Sidebar() {
     return () => document.removeEventListener("keyup", listener)
   }, [open, toggle])
 
+  const signout = useMutation(async () => removeToken(), {
+    async onSuccess() {
+      await qc.invalidateQueries()
+      toggle()
+    },
+  })
+
   return (
     <motion.nav
-      className="absolute inset-y-0 right-0 z-10 flex w-full flex-col bg-gray-100 shadow-xl sm:w-1/4 sm:min-w-[380px]"
+      className="absolute inset-y-0 right-0 z-10 flex w-full flex-col bg-white shadow-xl sm:w-1/4 sm:min-w-[380px]"
       initial={{
         x: open ? 0 : "100%",
       }}
@@ -58,6 +72,20 @@ export function Sidebar() {
         {view === "login-moderator" && <LoginModerator />}
         {view === "create-moderator" && <CreateModerator />}
         {view === "add-point" && <AddPoint />}
+      </div>
+
+      <div className="flex justify-end py-2 px-4">
+        {(user.data || moderator.data) && (
+          <div className="group flex items-center gap-2">
+            <span className="text-sm">Sign out</span>
+            <button
+              onClick={() => signout.mutate()}
+              className="rounded-full p-1.5 transition-colors group-hover:bg-red-50"
+            >
+              <ArrowLeftOnRectangleIcon className="h-5 w-5 text-red-400" />
+            </button>
+          </div>
+        )}
       </div>
     </motion.nav>
   )
